@@ -1,0 +1,69 @@
+// be/prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  planType      PlanType  @default(FREE)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  stripeCustomerId String? @unique
+  promptUsage   PromptUsage[]
+  projects      Project[]
+  payments      Payment[]
+}
+
+model PromptUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  usedAt    DateTime @default(now())
+  prompt    String
+  response  String   @db.Text
+  tokens    Int
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  files       Json      // Store file structure
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Payment {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  stripePaymentId String @unique
+  amount      Int
+  currency    String
+  status      PaymentStatus
+  planType    PlanType
+  createdAt   DateTime  @default(now())
+}
+
+enum PlanType {
+  FREE
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
