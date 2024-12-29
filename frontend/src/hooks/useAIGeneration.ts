@@ -18,7 +18,7 @@ interface GenerationResult {
 export const useAIGeneration = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { checkPlanAccess } = useSubscription();
+  useSubscription();
 
   const generateCode = useCallback(async (
     prompt: string,

@@ -6,11 +6,11 @@ import compression from 'compression';
 import morgan from 'morgan';
 import { config } from 'dotenv';
 import routes from './api/routes';
-import { errorHandler, notFound } from './api/middleware/error.middleware';
 import { connectDatabase, disconnectDatabase } from './db/connection';
 import { StripeService } from './services/payment/stripe.service';
 import { redis } from './services/redis/client';
 import { logger } from './utils/logger';
+import { notFound, errorHandler } from './api/middleware/error';
 
 // Load environment variables
 config();
@@ -71,7 +71,7 @@ class App {
         res.status(503).json({
           status: 'unhealthy',
           timestamp: new Date().toISOString(),
-          error: error.message
+          error: (error as Error).message
         });
       }
     });

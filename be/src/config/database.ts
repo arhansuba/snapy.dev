@@ -1,5 +1,7 @@
 // src/config/database.ts
-import { PrismaClientOptions } from '@prisma/client';
+
+import { PrismaClientOptions } from "@prisma/client/runtime/library";
+
 
 interface DatabaseConfig {
   url: string;
@@ -24,11 +26,8 @@ export const getPrismaConfig = (): PrismaClientOptions => ({
   log: process.env.NODE_ENV === 'development' 
     ? ['query', 'error', 'warn'] 
     : ['error'],
-  connectionTimeout: config.timeout,
   __internal: {
-    engine: {
-      connectTimeout: config.timeout,
-    },
+    engine: {},
   },
 });
 

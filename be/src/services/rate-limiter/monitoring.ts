@@ -107,9 +107,13 @@ export class RateLimitMonitoring {
     return metrics;
   }
 
-  private static async getIPBlockCount(): Promise<number> {
+  public static async getIPBlockCount(): Promise<number> {
     const keys = await redis.keys('blocklist:ip:*');
     return keys.length;
+  }
+
+  public static async clearUserLimits(userId: string): Promise<void> {
+    // Implementation for clearing user limits
   }
 
   private static getDayKey(timestamp: number): string {

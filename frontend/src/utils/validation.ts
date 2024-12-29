@@ -1,6 +1,5 @@
 // frontend/src/utils/validation.ts
 import { z } from 'zod';
-import { ValidationError } from '../../../shared/types/auth';
 
 // Base validation schemas
 export const emailSchema = z

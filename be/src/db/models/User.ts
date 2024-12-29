@@ -1,5 +1,6 @@
 // src/db/models/UserModel.ts
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PlanType, CreateUserRequest, UpdateUserRequest, DatabaseError } from './types';
 import { getPrismaClient } from '../connection';
 

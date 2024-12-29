@@ -1,12 +1,19 @@
 // src/api/routes/user.ts
-import { Router } from 'express';
-import { UserModel } from '../../db/models/UserModel';
+import { Router, Request } from 'express';
+import { UserModel } from '../../db/models/User';
 import { validate } from '../middleware/validation/validator';
 import { updateProfileSchema } from '../middleware/validation/schemas';
+import { PromptUsageModel } from '../../db/models/Prompt';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
 
 const router = Router();
 
-router.get('/profile', async (req, res, next) => {
+router.get('/profile', async (req: AuthenticatedRequest, res, next) => {
   try {
     const user = await UserModel.findById(req.user!.id);
     if (!user) {
@@ -23,7 +30,7 @@ router.get('/profile', async (req, res, next) => {
 router.put(
   '/profile',
   validate(updateProfileSchema),
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const updatedUser = await UserModel.update(req.user!.id, req.body);
       const { password, ...profile } = updatedUser;
@@ -32,9 +39,9 @@ router.put(
       next(error);
     }
   }
-});
+);
 
-router.get('/subscription', async (req, res, next) => {
+router.get('/subscription', async (req: AuthenticatedRequest, res, next) => {
   try {
     const user = await UserModel.findById(req.user!.id);
     if (!user) {

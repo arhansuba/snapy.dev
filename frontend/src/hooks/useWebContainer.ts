@@ -5,7 +5,7 @@ import { WebContainer } from '@webcontainer/api';
 interface FileSystemTree {
   [key: string]: {
     file?: {
-      contents: string;
+      contents: string | Uint8Array;
     };
     directory?: FileSystemTree;
   };
@@ -43,7 +43,18 @@ export const useWebContainer = () => {
   const mountFiles = useCallback(async (tree: FileSystemTree) => {
     try {
       if (!containerRef.current) throw new Error('WebContainer not initialized');
-      await containerRef.current.mount(tree);
+      const createFileSystem = async (tree: FileSystemTree, path: string = '/') => {
+        for (const [name, node] of Object.entries(tree)) {
+          const fullPath = `${path}${name}`;
+          if (node.file) {
+            await containerRef.current!.fs.writeFile(fullPath, node.file.contents);
+          } else if (node.directory) {
+            await containerRef.current!.fs.mkdir(fullPath, { recursive: true });
+            await createFileSystem(node.directory, `${fullPath}/`);
+          }
+        }
+      };
+      await createFileSystem(tree);
     } catch (err) {
       setError('Failed to mount files');
       throw err;
@@ -78,7 +89,7 @@ export const useWebContainer = () => {
     try {
       if (!containerRef.current) throw new Error('WebContainer not initialized');
       
-      const process = await containerRef.current.spawn(options.cmd, options.args, {
+      const process = await containerRef.current.spawn(options.cmd, options.args || [], { // Added default empty array
         cwd: options.cwd,
       });
 
@@ -103,10 +114,7 @@ export const useWebContainer = () => {
   }, []);
 
   // Start development server
-  const startDevServer = useCallback(async (
-    command: string = 'npm run dev',
-    port: number = 3000
-  ) => {
+  const startDevServer = useCallback(async (command: string = 'npm run dev') => {
     try {
       if (!containerRef.current) throw new Error('WebContainer not initialized');
       
@@ -122,7 +130,7 @@ export const useWebContainer = () => {
       );
 
       // Wait for the server to be ready
-      await containerRef.current.waitForPort(port);
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Added delay as a workaround
       
       return process;
     } catch (err) {

@@ -1,5 +1,6 @@
 // src/db/models/PromptUsageModel.ts
-import { PrismaClient, PromptUsage } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { PromptUsage } from '@prisma/client';
 import { CreatePromptUsageRequest, DatabaseError } from './types';
 import { getPrismaClient } from '../connection';
 
@@ -11,7 +12,7 @@ export class PromptUsageModel {
       return await this.prisma.promptUsage.create({
         data: {
           ...data,
-          userId,
+          userId, 
         },
       });
     } catch (error) {

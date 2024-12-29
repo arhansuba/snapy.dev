@@ -1,7 +1,8 @@
 // frontend/src/components/layout/Footer.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Github, Twitter } from 'lucide-react';
+import { Github, Sidebar, Twitter } from 'lucide-react';
+import { Header } from './Header';
 
 export const Footer: React.FC = () => {
   return (
@@ -27,7 +28,7 @@ export const Footer: React.FC = () => {
           >
             Privacy
           </Link>
-          
+          <a
             href="https://github.com/your-repo"
             target="_blank"
             rel="noopener noreferrer"
@@ -35,7 +36,7 @@ export const Footer: React.FC = () => {
           >
             <Github className="h-5 w-5" />
           </a>
-          
+          <a
             href="https://twitter.com/your-handle"
             target="_blank"
             rel="noopener noreferrer"

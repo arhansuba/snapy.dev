@@ -1,6 +1,6 @@
 // src/api/middleware/admin.middleware.ts
 import { Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from './auth.middleware';
+import { AuthenticatedRequest } from './auth';
 
 export const requireAdmin = async (
   req: AuthenticatedRequest,

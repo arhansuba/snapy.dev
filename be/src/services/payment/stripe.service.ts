@@ -1,8 +1,8 @@
 // src/services/payment/stripe.service.ts
 import Stripe from 'stripe';
 import { PLANS, PlanType } from './plans';
-import { UserModel } from '../../db/models/UserModel';
-import { PaymentModel } from '../../db/models/PaymentModel';
+import { UserModel } from '../../db/models/User';
+import { PaymentModel } from '../../db/models/Payment';
 import { PaymentStatus } from '../../db/models/types';
 
 export class StripeService {

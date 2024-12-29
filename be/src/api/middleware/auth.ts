@@ -1,8 +1,9 @@
 // src/api/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { JWTService } from '../../services/auth/jwt';
-import { UserModel } from '../../db/models/UserModel';
+
 import { AuthError } from '../../services/auth/types';
+import { UserModel } from '@/db/models/User';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -57,3 +58,5 @@ export class AuthMiddleware {
     AuthMiddleware.authenticate(req, res, next);
   }
 }
+
+// export { AuthMiddleware };

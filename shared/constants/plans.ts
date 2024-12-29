@@ -165,3 +165,5 @@ export const PLANS: Record<PlanType, Plan> = {
 export const FREE_FEATURES = Object.values(FEATURES).filter(feature => feature.included);
 export const getPlanFeatures = (planType: PlanType) => PLANS[planType].features;
 export const getPlanLimits = (planType: PlanType) => PLAN_LIMITS[planType];
+
+export { PlanType };

@@ -1,8 +1,9 @@
 // src/api/middleware/plan.middleware.ts
 import { Response, NextFunction } from 'express';
-import { AuthenticatedRequest } from './auth.middleware';
+
 import { PlanType } from '../../db/models/types';
 import { PLANS } from '../../services/payment/plans';
+import { AuthenticatedRequest } from './auth';
 
 export class PlanMiddleware {
   static requirePlan(allowedPlans: PlanType[]) {

@@ -17,7 +17,7 @@ export class LLMCache {
     namespace: 'llm:cache'
   };
 
-  constructor(private config: LLMCacheConfig = {}) {
+  constructor(private config: LLMCacheConfig = { ttl: 24 * 60 * 60, maxSize: 100, namespace: 'llm:cache' }) {
     this.config = { ...this.defaultConfig, ...config };
   }
 
@@ -163,10 +163,10 @@ export class LLMCache {
 
   private async getCacheSize(keys: string[]): Promise<number> {
     const sizes = await Promise.all(
-      keys.map(key => redis.memory('usage', key))
+      keys.map(key => redis.memory('USAGE', key))
     );
-    const totalBytes = sizes.reduce((acc, size) => acc + size, 0);
-    return totalBytes / (1024 * 1024); // Convert to MB
+    const totalBytes = sizes.reduce((acc, size) => (acc ?? 0) + (size ?? 0), 0);
+    return (totalBytes ?? 0) / (1024 * 1024); // Convert to MB
   }
 
   // Cache analytics methods

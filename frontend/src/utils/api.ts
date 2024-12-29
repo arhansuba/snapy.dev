@@ -1,8 +1,9 @@
 // frontend/src/utils/api.ts
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
-import { AuthResponse, AuthError } from '../../../shared/types/auth';
+import { AuthResponse } from '../../../shared/types/auth';
 
 class Api {
+  [x: string]: any;
   private api: AxiosInstance;
   private static instance: Api;
 
@@ -53,7 +54,8 @@ class Api {
 
   private handleError(error: AxiosError): Error {
     if (error.response?.data) {
-      return new Error(error.response.data.message || 'An error occurred');
+      const errorMessage = (error.response?.data as { message?: string })?.message || 'An error occurred';
+      return new Error(errorMessage);
     }
     return new Error(error.message || 'Network error');
   }

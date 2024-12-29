@@ -1,7 +1,7 @@
 // frontend/src/pages/Pricing.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, HelpCircle } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuth } from '../hooks/useAuth';
 import { useSubscription } from '../hooks/useSubscription';
@@ -9,7 +9,7 @@ import { PLANS, PlanType } from '../../../shared/constants/plans';
 
 export const Pricing: React.FC = () => {
   const [billingInterval, setBillingInterval] = useState<'month' | 'year'>('month');
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { currentPlan, subscribe, loading } = useSubscription();
   const navigate = useNavigate();
 

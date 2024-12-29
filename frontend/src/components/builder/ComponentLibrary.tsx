@@ -1,6 +1,6 @@
 // frontend/src/components/builder/ComponentLibrary.tsx
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Grid, List, Code, Copy, Edit, Trash } from 'lucide-react';
+import { Search, Grid, List, Code, Copy, Edit, Trash } from 'lucide-react';
 import { useSubscription } from '../../hooks/useSubscription';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
@@ -29,7 +29,7 @@ export const ComponentLibrary: React.FC = () => {
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  const { checkPlanAccess } = useSubscription();
+  useSubscription();
 
   useEffect(() => {
     // Fetch components from API

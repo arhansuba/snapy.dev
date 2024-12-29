@@ -1,5 +1,5 @@
-// src/db/models/PaymentModel.ts
-import { PrismaClient, Payment } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { Payment } from '@prisma/client';
 import { CreatePaymentRequest, PaymentStatus, DatabaseError } from './types';
 import { getPrismaClient } from '../connection';
 

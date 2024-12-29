@@ -1,9 +1,15 @@
 // src/api/routes/payment.ts
-import { Router } from 'express';
+import { Router, Request } from 'express';
 import { StripeService } from '../../services/payment/stripe.service';
 import { validate } from '../middleware/validation/validator';
 import { createSubscriptionSchema } from '../middleware/validation/schemas';
 import { PLANS, PlanType } from '../../services/payment/plans';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+  };
+}
 
 const router = Router();
 
@@ -11,7 +17,7 @@ router.get('/plans', (req, res) => {
   res.json(PLANS);
 });
 
-router.post('/create-checkout-session', async (req, res, next) => {
+router.post('/create-checkout-session', async (req: AuthenticatedRequest, res, next) => {
   try {
     const { planType } = req.body;
     const userId = req.user!.id;
@@ -33,7 +39,7 @@ router.post('/create-checkout-session', async (req, res, next) => {
 router.post(
   '/create-subscription',
   validate(createSubscriptionSchema),
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { planType, paymentMethodId } = req.body;
       const userId = req.user!.id;
@@ -53,7 +59,7 @@ router.post(
 
 router.post('/webhook', async (req, res, next) => {
   try {
-    const signature = req.headers['stripe-signature']!;
+    const signature = req.headers['stripe-signature'] as string;
     await StripeService.handleWebhook(signature, req.body);
     res.json({ received: true });
   } catch (error) {

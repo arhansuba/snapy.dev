@@ -19,7 +19,7 @@ const initialState: ProjectState = {
   error: null,
 };
 
-export const useProjectStore = create<ProjectStore>()((set, get) => ({
+export const useProjectStore = create<ProjectStore>()((set) => ({
   ...initialState,
 
   fetchProjects: async () => {

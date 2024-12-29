@@ -1,6 +1,6 @@
 // src/services/project/generator.ts
 import { DeepSeek } from '../../llm/deepseek';
-import { ProjectModel } from '../../db/models/ProjectModel';
+import { ProjectModel } from '../../db/models/Project';
 import { logger } from '../../utils/logger';
 import path from 'path';
 import fs from 'fs-extra';
@@ -39,8 +39,7 @@ export class ProjectGenerator {
       const files = await this.generateProjectFiles(options);
 
       // Save project to database
-      const project = await ProjectModel.create({
-        userId,
+      const project = await ProjectModel.create(userId, {
         name: options.name,
         description: options.description,
         files: this.serializeFiles(files),
@@ -127,6 +126,12 @@ export class ProjectGenerator {
     }
 
     return configs;
+  }
+  getReactTsConfig(): string | PromiseLike<string> {
+    throw new Error('Method not implemented.');
+  }
+  getTailwindConfig(): string | PromiseLike<string> {
+    throw new Error('Method not implemented.');
   }
 
   private async generateMainFiles(

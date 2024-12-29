@@ -1,7 +1,8 @@
 // src/api/routes/admin/monitoring.ts
 import { Router } from 'express';
 import { RateLimitMonitoring } from '../../../services/rate-limiter/monitoring';
-import { authenticate } from '../../middleware/auth.middleware';
+import { AuthMiddleware } from '../../middleware/auth';
+
 import { requireAdmin } from '../../middleware/admin.middleware';
 import { validate } from '../../middleware/validation/validator';
 import { z } from 'zod';
@@ -17,7 +18,7 @@ const timeRangeSchema = z.object({
 // Get global metrics
 router.get(
   '/metrics',
-  authenticate,
+  AuthMiddleware.authenticate,
   requireAdmin,
   validate(timeRangeSchema),
   async (req, res, next) => {
@@ -34,7 +35,7 @@ router.get(
 // Get user-specific metrics
 router.get(
   '/metrics/user/:userId',
-  authenticate,
+  AuthMiddleware.authenticate,
   requireAdmin,
   async (req, res, next) => {
     try {
@@ -49,7 +50,7 @@ router.get(
 // Get blocked IPs
 router.get(
   '/blocked-ips',
-  authenticate,
+  AuthMiddleware.authenticate,
   requireAdmin,
   async (req, res, next) => {
     try {
@@ -64,7 +65,7 @@ router.get(
 // Clear rate limit for a user
 router.post(
   '/clear-limits/:userId',
-  authenticate,
+  AuthMiddleware.authenticate,
   requireAdmin,
   async (req, res, next) => {
     try {

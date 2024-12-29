@@ -4,7 +4,9 @@ import { Check, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useSubscription } from '../../hooks/useSubscription';
 import { Button } from '../common/Button';
-import { PLANS, PlanType } from '../../../shared/constants/plans';
+import { PLANS } from '../../../../shared/constants/plans';
+import { Plan, PlanType } from '../../../../shared/types/payment';
+//import { PLANS, PlanType } from '../../shared/constants/plans';
 
 export const PricingPlans: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -30,7 +32,7 @@ export const PricingPlans: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-8 mt-16 lg:grid-cols-4">
-        {Object.values(PLANS).map((plan) => {
+        {Object.values(PLANS).map((plan: Plan) => {
           const isCurrentPlan = currentPlan?.type === plan.type;
 
           return (
@@ -60,7 +62,7 @@ export const PricingPlans: React.FC = () => {
               )}
 
               <ul className="mt-8 space-y-3 text-sm leading-6">
-                {plan.features.map((feature) => (
+                {plan.features.map((feature: { id: string; included: boolean; name: string }) => (
                   <li key={feature.id} className="flex gap-3">
                     {feature.included ? (
                       <Check className="h-6 w-6 text-green-500" />

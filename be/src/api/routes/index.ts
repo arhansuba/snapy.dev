@@ -5,8 +5,8 @@ import paymentRoutes from './payment';
 import projectRoutes from './project';
 import aiRoutes from './ai';
 import userRoutes from './user';
-import { authenticate } from '../middleware/auth.middleware';
-import { rateLimitByPlan } from '../middleware/rate-limit.middleware';
+import { AuthMiddleware } from '../middleware/auth';
+import { aiRateLimit } from '../middleware/ai-rate-limit.middleware';
 
 const router = Router();
 
@@ -14,9 +14,9 @@ const router = Router();
 router.use('/auth', authRoutes);
 
 // Protected routes
-router.use('/payment', authenticate, rateLimitByPlan, paymentRoutes);
-router.use('/projects', authenticate, rateLimitByPlan, projectRoutes);
-router.use('/ai', authenticate, rateLimitByPlan, aiRoutes);
-router.use('/users', authenticate, rateLimitByPlan, userRoutes);
+router.use('/payment', AuthMiddleware.authenticate, aiRateLimit, paymentRoutes);
+router.use('/projects', AuthMiddleware.authenticate, aiRateLimit, projectRoutes);
+router.use('/ai', AuthMiddleware.authenticate, aiRateLimit, aiRoutes);
+router.use('/users', AuthMiddleware.authenticate, aiRateLimit, userRoutes);
 
 export default router;

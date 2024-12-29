@@ -85,7 +85,7 @@ export interface CreatePaymentRequest {
   currency: string;
   status: PaymentStatus;
   planType: PlanType;
-}
+} 
 
 // Error types
 export class DatabaseError extends Error {

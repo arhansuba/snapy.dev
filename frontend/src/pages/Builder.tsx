@@ -8,7 +8,7 @@ import { Button } from '../components/common/Button';
 import { useSubscription } from '../hooks/useSubscription';
 import { PlanType } from '../../../shared/types/payment';
 
-interface GeneratedComponent {
+export interface GeneratedComponent {
   code: string;
   framework: string;
   styling: string;

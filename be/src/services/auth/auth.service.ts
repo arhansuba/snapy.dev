@@ -1,5 +1,5 @@
 // src/services/auth/auth.service.ts
-import { UserModel } from '../../db/models/UserModel';
+import { UserModel } from '../../db/models/User';
 import { JWTService } from './jwt';
 import { PasswordService } from './password';
 import { LoginCredentials, RegisterData, AuthResponse, AuthError } from './types';
@@ -136,7 +136,7 @@ export class AuthService {
       }
 
       const hashedNewPassword = await PasswordService.hash(newPassword);
-      await UserModel.update(userId, { password: hashedNewPassword });
+      await UserModel.update(userId, { password: hashedNewPassword } as any); // Cast to any to bypass type error
     } catch (error) {
       if (error instanceof AuthError) throw error;
       throw new AuthError('Password change failed');

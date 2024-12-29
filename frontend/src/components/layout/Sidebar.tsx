@@ -1,6 +1,6 @@
 // frontend/src/components/layout/Sidebar.tsx
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Home, Code, Box, Settings, CreditCard } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useSubscription } from '../../hooks/useSubscription';
@@ -14,9 +14,8 @@ const navItems = [
 ];
 
 export const Sidebar: React.FC = () => {
-  const location = useLocation();
   const { user } = useAuth();
-  const { checkPlanAccess } = useSubscription();
+  useSubscription();
 
   return (
     <aside className="fixed left-0 top-16 z-30 hidden h-[calc(100vh-4rem)] w-56 border-r bg-background md:block">

@@ -19,13 +19,13 @@ export class DatabaseConnection {
 
     // Log queries in development
     if (process.env.NODE_ENV === 'development') {
-      this.client.$on('query', (e) => {
+      this.client.$on('query', (e: { query: string; }) => {
         logger.debug('Query: ' + e.query);
       });
     }
 
     // Log errors
-    this.client.$on('error', (e) => {
+    this.client.$on('error', (e: any) => {
       logger.error('Database error:', e);
     });
   }

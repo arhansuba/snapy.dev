@@ -168,5 +168,55 @@ export enum PlanType {
         teamMembers: 1,
       }
     },
-    // Add other plan configurations...
+    [PlanType.BASIC]: {
+      type: PlanType.BASIC,
+      name: 'Basic',
+      description: 'Basic plan with more features',
+      features: [
+        { id: '1', name: 'Basic AI Generation', description: 'Generate simple components', included: true },
+        { id: '2', name: 'Preview Generated Apps', description: 'Preview before download', included: true },
+        { id: '3', name: 'Email Support', description: 'Access to email support', included: true },
+      ],
+      limits: {
+        promptsPerDay: 10,
+        projectsPerMonth: 5,
+        tokensPerPrompt: 2000,
+        maxProjects: 3,
+        teamMembers: 3,
+      }
+    },
+    [PlanType.PREMIUM]: {
+      type: PlanType.PREMIUM,
+      name: 'Premium',
+      description: 'Premium plan with advanced features',
+      features: [
+        { id: '1', name: 'Advanced AI Generation', description: 'Generate advanced components', included: true },
+        { id: '2', name: 'Priority Support', description: 'Access to priority support', included: true },
+        { id: '3', name: 'Unlimited Projects', description: 'Create unlimited projects', included: true },
+      ],
+      limits: {
+        promptsPerDay: 50,
+        projectsPerMonth: 20,
+        tokensPerPrompt: 5000,
+        maxProjects: 10,
+        teamMembers: 10,
+      }
+    },
+    [PlanType.ENTERPRISE]: {
+      type: PlanType.ENTERPRISE,
+      name: 'Enterprise',
+      description: 'Enterprise plan with all features',
+      features: [
+        { id: '1', name: 'Custom AI Generation', description: 'Generate custom components', included: true },
+        { id: '2', name: 'Dedicated Support', description: 'Access to dedicated support', included: true },
+        { id: '3', name: 'Unlimited Everything', description: 'Unlimited usage of all features', included: true },
+      ],
+      limits: {
+        promptsPerDay: 100,
+        projectsPerMonth: 50,
+        tokensPerPrompt: 10000,
+        maxProjects: 50,
+        teamMembers: 50,
+      }
+    }
   };

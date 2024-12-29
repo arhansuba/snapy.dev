@@ -22,7 +22,7 @@ export const useSubscription = () => {
     fetchInvoices,
   } = useSubscriptionStore();
 
-  const [hasAccess, setHasAccess] = useState(false);
+  const [hasAccess] = useState(false);
 
   // Fetch subscription data on mount
   useEffect(() => {

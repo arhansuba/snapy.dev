@@ -1,14 +1,21 @@
 // frontend/src/components/builder/AICommandBar.tsx
-import React, { useState, useRef, useCallback } from 'react';
-import { Send, Loader2, Code, Settings, X } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Send, Loader2, Settings, X } from 'lucide-react';
 import { useAIGeneration } from '../../hooks/useAIGeneration';
 import { useSubscription } from '../../hooks/useSubscription';
 import { Button } from '../common/Button';
-import { PlanType } from '../../../shared/types/payment';
+import { PlanType } from '../../../../shared/types/payment';
+import { GeneratedComponent } from '../../pages/Builder';
+
+interface GenerationOptions {
+  framework: 'react' | 'vue' | 'angular';
+  styling: 'tailwind' | 'css' | 'scss';
+  type: 'component' | 'function' | 'page' | 'api';
+}
 
 interface CommandBarProps {
-  onCodeGenerated: (code: string) => void;
-  onError?: (error: string) => void;
+  onCodeGenerated: (result: GeneratedComponent) => void;
+  onError: (error: Error) => void;
 }
 
 export const AICommandBar: React.FC<CommandBarProps> = ({
@@ -17,7 +24,7 @@ export const AICommandBar: React.FC<CommandBarProps> = ({
 }) => {
   const [prompt, setPrompt] = useState('');
   const [isConfigOpen, setIsConfigOpen] = useState(false);
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<GenerationOptions>({
     framework: 'react',
     styling: 'tailwind',
     type: 'component'
@@ -43,19 +50,19 @@ export const AICommandBar: React.FC<CommandBarProps> = ({
 
     // Check if user has access to AI generation
     if (!checkPlanAccess([PlanType.BASIC, PlanType.PREMIUM, PlanType.ENTERPRISE])) {
-      onError?.('Please upgrade your plan to use AI code generation');
+      onError?.(new Error('Please upgrade your plan to use AI code generation'));
       return;
     }
 
     try {
-      const result = await generateCode(prompt, config);
-      onCodeGenerated(result.code);
+      const result = await generateCode(prompt, config) as unknown as GeneratedComponent;
+      onCodeGenerated(result);
       setPrompt('');
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
       }
     } catch (error) {
-      onError?.(error instanceof Error ? error.message : 'Failed to generate code');
+      onError?.(error instanceof Error ? error : new Error('Failed to generate code'));
     }
   };
 
@@ -130,7 +137,7 @@ export const AICommandBar: React.FC<CommandBarProps> = ({
                   value={config.framework}
                   onChange={(e) => setConfig(prev => ({
                     ...prev,
-                    framework: e.target.value
+                    framework: e.target.value as 'react' | 'vue' | 'angular'
                   }))}
                   className="w-full rounded-md border p-2"
                 >
@@ -146,7 +153,7 @@ export const AICommandBar: React.FC<CommandBarProps> = ({
                   value={config.styling}
                   onChange={(e) => setConfig(prev => ({
                     ...prev,
-                    styling: e.target.value
+                    styling: e.target.value as 'tailwind' | 'css' | 'scss'
                   }))}
                   className="w-full rounded-md border p-2"
                 >
@@ -162,12 +169,13 @@ export const AICommandBar: React.FC<CommandBarProps> = ({
                   value={config.type}
                   onChange={(e) => setConfig(prev => ({
                     ...prev,
-                    type: e.target.value
+                    type: e.target.value as 'function' | 'component' | 'page' | 'api'
                   }))}
                   className="w-full rounded-md border p-2"
                 >
                   <option value="component">Component</option>
                   <option value="function">Function</option>
+                  <option value="page">Page</option>
                   <option value="api">API Endpoint</option>
                 </select>
               </div>

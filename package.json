@@ -1,0 +1,16 @@
+{
+  "name": "ai-app-builder",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "be",
+    "frontend",
+    "shared"
+  ],
+  "scripts": {
+    "dev:be": "npm run dev --workspace=be",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
+  }
+}

@@ -1,5 +1,5 @@
 // src/services/usage/tracker.ts
-import { PromptUsageModel } from '../../db/models/PromptUsageModel';
+import { PromptUsageModel } from '../../db/models/Prompt';
 import { PlanType } from '../../services/payment/plans';
 import { redis } from '../../services/redis/client';
 import { logger } from '../../utils/logger';
@@ -67,8 +67,7 @@ export class UsageTracker {
       await pipeline.exec();
 
       // Store in database for analytics
-      await PromptUsageModel.create({
-        userId,
+      await PromptUsageModel.create(userId, {
         prompt,
         response,
         tokens

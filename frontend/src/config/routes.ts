@@ -6,7 +6,7 @@ interface Route {
   name: string;
   title: string;
   requiredAuth: boolean;
-  requiredPlan?: PlanType[];
+  requiredPlan?: readonly PlanType[];
   roles?: string[];
 }
 

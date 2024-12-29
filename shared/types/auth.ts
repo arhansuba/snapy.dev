@@ -1,3 +1,5 @@
+import { PlanType } from "./payment";
+
 // shared/types/auth.ts
 export enum UserRole {
     USER = 'USER',

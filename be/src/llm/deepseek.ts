@@ -28,6 +28,9 @@ export class DeepSeek {
     topP: 0.95,
     presencePenalty: 0,
     frequencyPenalty: 0,
+    baseUrl: undefined,
+    apiKey: undefined,
+    timeout: undefined
   };
 
   async generateCode(request: CodeGenerationRequest): Promise<LLMResponse> {
@@ -80,10 +83,10 @@ export class DeepSeek {
     const { prompt, config = this.defaultConfig } = request;
 
     try {
-      const response = await fetch(`${config.baseUrl}/v1/generate`, {
+      const response = await fetch(`${(config as LLMConfig).baseUrl}/v1/generate`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${config.apiKey}`,
+          'Authorization': `Bearer ${(config as LLMConfig).apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -95,7 +98,7 @@ export class DeepSeek {
           frequency_penalty: config.frequencyPenalty,
           stop: config.stop,
         }),
-        timeout: config.timeout,
+        timeout: (config as LLMConfig).timeout,
       });
 
       if (!response.ok) {

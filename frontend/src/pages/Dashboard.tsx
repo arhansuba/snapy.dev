@@ -5,15 +5,11 @@ import {
  Code, 
  Cpu, 
  Folder, 
- Activity,
  ArrowRight,
- Zap,
- AlertCircle 
-} from 'lucide-react';
+ Zap} from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { useAuth } from '../hooks/useAuth';
 import { useSubscription } from '../hooks/useSubscription';
-import { useAIGeneration } from '../hooks/useAIGeneration';
 import { Project } from '../../../shared/types/project';
 
 export const Dashboard: React.FC = () => {

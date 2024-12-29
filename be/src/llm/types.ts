@@ -1,5 +1,8 @@
 // src/llm/types.ts
 export interface LLMConfig {
+    baseUrl: any;
+    apiKey: any;
+    timeout: number | undefined;
     model: string;
     maxTokens: number;
     temperature: number;

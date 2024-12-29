@@ -1,14 +1,22 @@
 // src/api/routes/project.ts
-import { Router } from 'express';
-import { ProjectModel } from '../../db/models/ProjectModel';
+import { Router, Request } from 'express';
+import { ProjectModel } from '../../db/models/Project';
 import { validate } from '../middleware/validation/validator';
 import { createProjectSchema, updateProjectSchema } from '../middleware/validation/schemas';
-import { requirePlan } from '../middleware/plan.middleware';
+import { requirePlan } from '../middleware/requirePlan';
+
 import { PlanType } from '../../services/payment/plans';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    plan: PlanType;
+  };
+}
 
 const router = Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req: AuthenticatedRequest, res, next) => {
   try {
     const projects = await ProjectModel.getUserProjects(req.user!.id);
     res.json(projects);
@@ -17,7 +25,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (req: AuthenticatedRequest, res, next) => {
   try {
     const project = await ProjectModel.findById(req.params.id);
     if (!project || project.userId !== req.user!.id) {
@@ -33,7 +41,7 @@ router.post(
   '/',
   validate(createProjectSchema),
   requirePlan([PlanType.BASIC, PlanType.PREMIUM, PlanType.ENTERPRISE]),
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const project = await ProjectModel.create(req.user!.id, req.body);
       res.status(201).json(project);
@@ -46,7 +54,7 @@ router.post(
 router.put(
   '/:id',
   validate(updateProjectSchema),
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const project = await ProjectModel.findById(req.params.id);
       if (!project || project.userId !== req.user!.id) {
@@ -61,7 +69,7 @@ router.put(
   }
 );
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', async (req: AuthenticatedRequest, res, next) => {
   try {
     const project = await ProjectModel.findById(req.params.id);
     if (!project || project.userId !== req.user!.id) {

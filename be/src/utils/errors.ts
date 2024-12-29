@@ -1,3 +1,5 @@
+import { logger } from "./logger";
+
 // src/utils/errors.ts
 export class AppError extends Error {
     constructor(

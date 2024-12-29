@@ -1,11 +1,11 @@
 // frontend/src/store/subscriptionStore.ts
 import { create } from 'zustand';
 import { 
-  Plan, 
   Subscription, 
   PaymentMethod,
   Invoice,
-  PaymentState 
+  PaymentState, 
+  PlanType
 } from '../../../shared/types/payment';
 import { api } from '../utils/api';
 
@@ -27,7 +27,7 @@ const initialState: PaymentState = {
   error: null,
 };
 
-export const useSubscriptionStore = create<SubscriptionStore>()((set, get) => ({
+export const useSubscriptionStore = create<SubscriptionStore>()((set) => ({
   ...initialState,
 
   fetchPlans: async () => {
@@ -39,11 +39,11 @@ export const useSubscriptionStore = create<SubscriptionStore>()((set, get) => ({
         method: 'GET',
       });
 
-      set((state) => ({
-        currentPlan: plans.find(p => p.id === subscription?.planType) || null,
+      set({
+        currentPlan: plans.find((p: { id: PlanType; }) => p.id === subscription?.planType) || null,
         subscription,
         loading: false,
-      }));
+      });
     } catch (error) {
       set({ 
         error: error instanceof Error ? error.message : 'Failed to fetch plans',

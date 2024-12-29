@@ -1,9 +1,8 @@
 // src/api/middleware/error.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { AuthError } from '../../services/auth/types';
-import { DatabaseError } from '../../db/models/types';
 
-export interface AppError extends Error {
+export interface IAppError extends Error {
   statusCode?: number;
   status?: string;
   isOperational?: boolean;
@@ -11,7 +10,7 @@ export interface AppError extends Error {
 
 export class ErrorMiddleware {
   static handle(
-    error: AppError,
+    error: IAppError,
     req: Request,
     res: Response,
     next: NextFunction
@@ -26,8 +25,8 @@ export class ErrorMiddleware {
     }
   }
 
-  private static sendDevError(error: AppError, res: Response) {
-    res.status(error.statusCode).json({
+  private static sendDevError(error: IAppError, res: Response) {
+    res.status(error.statusCode || 500).json({
       status: error.status,
       error,
       message: error.message,
@@ -35,10 +34,10 @@ export class ErrorMiddleware {
     });
   }
 
-  private static sendProdError(error: AppError, res: Response) {
+  private static sendProdError(error: IAppError, res: Response) {
     // Operational, trusted error: send message to client
     if (error.isOperational) {
-      res.status(error.statusCode).json({
+      res.status(error.statusCode || 500).json({
         status: error.status,
         message: error.message
       });
@@ -54,7 +53,7 @@ export class ErrorMiddleware {
   }
 
   static notFound(req: Request, res: Response, next: NextFunction) {
-    const error = new Error(`Not found - ${req.originalUrl}`) as AppError;
+    const error = new Error(`Not found - ${req.originalUrl}`) as IAppError;
     error.statusCode = 404;
     error.status = 'fail';
     next(error);

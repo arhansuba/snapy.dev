@@ -1,10 +1,11 @@
 // frontend/src/components/builder/AIPreview.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { Refresh, Maximize2, Minimize2, Code, Download } from 'lucide-react';
+import { Maximize2, Minimize2, Code, Download, RefreshCw as RefreshIcon } from 'lucide-react';
 import { useWebContainer } from '../../hooks/useWebContainer';
 import { Button } from '../common/Button';
 import { useSubscription } from '../../hooks/useSubscription';
-import { PlanType } from '../../../shared/types/payment';
+import { PlanType } from '../../../../shared/types/payment';
+
 
 interface AIPreviewProps {
   code: string;
@@ -27,7 +28,6 @@ export const AIPreview: React.FC<AIPreviewProps> = ({
 
   const {
     mountFiles,
-    writeFile,
     startDevServer,
     isReady
   } = useWebContainer();
@@ -134,7 +134,12 @@ export const AIPreview: React.FC<AIPreviewProps> = ({
     try {
       const files = await generateProjectFiles(code, framework, styling);
       const zip = await createZipFile(files);
-      downloadZip(zip, 'component.zip');
+      const url = URL.createObjectURL(zip);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'component.zip';
+      a.click();
+      URL.revokeObjectURL(url);
     } catch (err) {
       setError('Failed to download component');
     }
@@ -163,7 +168,7 @@ export const AIPreview: React.FC<AIPreviewProps> = ({
             onClick={onRefresh}
             disabled={isLoading}
           >
-            <Refresh className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
           <Button
             variant="ghost"
@@ -223,3 +228,63 @@ export const AIPreview: React.FC<AIPreviewProps> = ({
     </div>
   );
 };
+const generateAppWrapper = (framework: string) => {
+  switch (framework) {
+    case 'react':
+      return `
+        import React from 'react';
+        import ReactDOM from 'react-dom';
+        import Component from './Component';
+
+        const App = () => (
+          <div>
+            <Component />
+          </div>
+        );
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+      `;
+    case 'vue':
+      return `
+        import { createApp } from 'vue';
+        import Component from './Component.vue';
+
+        createApp({
+          components: { Component },
+          template: '<Component />'
+        }).mount('#root');
+      `;
+    case 'svelte':
+      return `
+        import App from './Component.svelte';
+
+        const app = new App({
+          target: document.getElementById('root')
+        });
+
+        export default app;
+      `;
+    default:
+      throw new Error('Unsupported framework');
+  }
+};
+function installDependencies(_framework: string, _styling: string) {
+  throw new Error('Function not implemented.');
+}
+
+function generateEntryPoint(_framework: string) {
+  throw new Error('Function not implemented.');
+}
+
+function generateTailwindConfig() {
+  throw new Error('Function not implemented.');
+}
+
+function createZipFile(_files: Record<string, any>): Promise<Blob> {
+  // Implement the function to return a Blob
+  return new Promise((resolve) => {
+    const blob = new Blob(); // Placeholder implementation
+    resolve(blob);
+  });
+}
+

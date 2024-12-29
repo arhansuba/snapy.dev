@@ -1,9 +1,19 @@
 // src/db/models/ProjectModel.ts
-import { PrismaClient, Project } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { Project } from '@prisma/client';
 import { CreateProjectRequest, DatabaseError } from './types';
 import { getPrismaClient } from '../connection';
 
 export class ProjectModel {
+  static getComponent(id: string) { 
+      throw new Error('Method not implemented.');
+  }
+  static trackDownload(id: string) {
+      throw new Error('Method not implemented.');
+  }
+  static trackComponentDownload(id: string) {
+      throw new Error('Method not implemented.');
+  }
   private static prisma = getPrismaClient();
 
   static async create(userId: string, data: CreateProjectRequest): Promise<Project> {

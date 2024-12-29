@@ -8,7 +8,7 @@ import { useSubscription } from '../../hooks/useSubscription';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { currentPlan } = useSubscription();
 
   return (

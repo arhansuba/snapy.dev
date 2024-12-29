@@ -1,9 +1,8 @@
-// frontend/src/components/payment/SubscriptionStatus.tsx
 import React from 'react';
 import { AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { useSubscription } from '../../hooks/useSubscription';
 import { Button } from '../common/Button';
-import { SubscriptionStatus as Status } from '../../../shared/types/payment';
+import type { SubscriptionStatus as SubscriptionStatusType } from '../../../../shared/types/subscription'; // Type-only import
 
 export const SubscriptionStatus: React.FC = () => {
   const {
@@ -31,33 +30,30 @@ export const SubscriptionStatus: React.FC = () => {
         <p className="mt-2 text-gray-500">
           Choose a plan to get started with our premium features.
         </p>
-        <Button
-          href="/pricing"
-          className="mt-4"
-        >
-          View Plans
+        <Button className="mt-4">
+          <a href="/pricing">View Plans</a>
         </Button>
       </div>
     );
   }
 
   const getStatusBadge = () => {
-    switch (subscription.status) {
-      case Status.ACTIVE:
+    switch (subscription.status as SubscriptionStatusType) { // Cast subscription.status to SubscriptionStatusType
+      case 'active':
         return (
           <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
             <CheckCircle className="mr-1 h-4 w-4" />
             Active
           </span>
         );
-      case Status.TRIALING:
+      case 'trialing':
         return (
           <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
             <Clock className="mr-1 h-4 w-4" />
             Trial
           </span>
         );
-      case Status.PAST_DUE:
+      case 'past_due':
         return (
           <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700">
             <AlertTriangle className="mr-1 h-4 w-4" />
@@ -112,11 +108,8 @@ export const SubscriptionStatus: React.FC = () => {
       </div>
 
       <div className="flex gap-4">
-        <Button
-          href="/billing/update"
-          variant="outline"
-        >
-          Change Plan
+        <Button variant="outline">
+          <a href="/billing/update">Change Plan</a> {/* Use an anchor tag inside Button */}
         </Button>
         {!subscription.cancelAtPeriodEnd && (
           <Button

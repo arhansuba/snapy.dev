@@ -97,7 +97,7 @@ export class LLMRateLimiter {
   }
 
   // Analytics methods
-  async getUsageStats(userId?: string): Promise<{
+  async getUsageStats(userId?: string, userType: keyof typeof this.userLimits = 'free'): Promise<{
     total: number;
     remaining: number;
     resetTime: number;
