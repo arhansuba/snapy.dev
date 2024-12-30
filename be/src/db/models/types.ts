@@ -1,4 +1,5 @@
-// src/db/models/types.ts
+import { Prisma } from '@prisma/client';
+
 export enum PlanType {
   FREE = 'FREE',
   BASIC = 'BASIC',
@@ -10,6 +11,18 @@ export enum PaymentStatus {
   PENDING = 'PENDING',
   SUCCEEDED = 'SUCCEEDED',
   FAILED = 'FAILED'
+}
+
+export enum ProjectFramework {
+  REACT = 'react',
+  VUE = 'vue',
+  ANGULAR = 'angular'
+}
+
+export enum ProjectStyling {
+  TAILWIND = 'tailwind',
+  CSS = 'css',
+  SCSS = 'scss'
 }
 
 export interface UserAttributes {
@@ -37,7 +50,9 @@ export interface ProjectAttributes {
   userId: string;
   name: string;
   description?: string;
-  files: Record<string, any>;
+  framework: ProjectFramework;
+  styling: ProjectStyling;
+  files: Prisma.JsonValue;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -69,7 +84,8 @@ export interface UpdateUserRequest {
 
 export interface CreateProjectRequest {
   name: string;
-  description?: string;
+  framework: string;
+  styling: string;
   files: Record<string, any>;
 }
 

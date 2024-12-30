@@ -1,8 +1,11 @@
+import { PlanType } from '../../db/models/types';
+
 // src/services/auth/types.ts
 export interface AuthTokenPayload {
     userId: string;
     email: string;
-    planType: string;
+    planType: PlanType;
+    name?: string; // Ensure name is string | undefined
   }
   
   export interface LoginCredentials {

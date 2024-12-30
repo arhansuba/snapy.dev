@@ -13,6 +13,7 @@ export interface LLMConfig {
   }
   
   export interface LLMResponse {
+    files: {};
     text: string;
     tokens: number;
     prompt_tokens: number;

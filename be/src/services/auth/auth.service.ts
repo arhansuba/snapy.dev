@@ -21,13 +21,15 @@ export class AuthService {
       const user = await UserModel.create({
         ...data,
         password: hashedPassword,
+        name: data.name || undefined, // Ensure name is string | undefined
       });
 
       // Generate token
       const token = JWTService.generateToken({
         userId: user.id,
         email: user.email,
-        planType: user.planType,
+        planType: user.planType as PlanType,
+        name: user.name || undefined, // Ensure name is string | undefined
       });
 
       return {
@@ -35,8 +37,8 @@ export class AuthService {
         user: {
           id: user.id,
           email: user.email,
-          name: user.name,
-          planType: user.planType,
+          name: user.name || undefined, // Ensure name is string | undefined
+          planType: user.planType as PlanType,
         },
       };
     } catch (error) {
@@ -67,7 +69,8 @@ export class AuthService {
       const token = JWTService.generateToken({
         userId: user.id,
         email: user.email,
-        planType: user.planType,
+        planType: user.planType as PlanType,
+        name: user.name || undefined, // Ensure name is string | undefined
       });
 
       return {
@@ -75,8 +78,8 @@ export class AuthService {
         user: {
           id: user.id,
           email: user.email,
-          name: user.name,
-          planType: user.planType,
+          name: user.name || undefined, // Ensure name is string | undefined
+          planType: user.planType as PlanType,
         },
       };
     } catch (error) {
@@ -107,7 +110,7 @@ export class AuthService {
       return JWTService.generateToken({
         userId: user.id,
         email: user.email,
-        planType: user.planType,
+        planType: user.planType as PlanType,
       });
     } catch (error) {
       if (error instanceof AuthError) throw error;

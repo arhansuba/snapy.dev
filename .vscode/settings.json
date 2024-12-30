@@ -1,0 +1,21 @@
+{
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.autoSave": "onFocusChange",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true
+    },
+    "javascript.validate.enable": false,
+    "typescript.validate.enable": false,
+    "files.associations": {
+        "*.css": "postcss"
+    },
+    "cssVariables.lookupFiles": [
+        "**/*.css",
+        "node_modules/tailwindcss/base.css",
+        "node_modules/tailwindcss/components.css",
+        "node_modules/tailwindcss/utilities.css"
+    ]
+}

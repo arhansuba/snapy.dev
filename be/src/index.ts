@@ -11,9 +11,12 @@ import { StripeService } from './services/payment/stripe.service';
 import { redis } from './services/redis/client';
 import { logger } from './utils/logger';
 import { notFound, errorHandler } from './api/middleware/error';
-
+import { PrismaClient } from '@prisma/client';
+require('dotenv').config();
 // Load environment variables
 config();
+
+const prisma = new PrismaClient();
 
 class App {
   public app: express.Application;
@@ -103,7 +106,7 @@ class App {
 
   private async checkDatabaseHealth(): Promise<boolean> {
     try {
-      await connectDatabase();
+      await prisma.$connect();
       return true;
     } catch (error) {
       logger.error('Database health check failed:', error);
@@ -126,7 +129,7 @@ class App {
 
     try {
       // Disconnect from database
-      await disconnectDatabase();
+      await prisma.$disconnect();
       logger.info('Database disconnected');
 
       // Close Redis connection
@@ -146,7 +149,7 @@ class App {
       const PORT = process.env.PORT || 3001;
 
       // Initialize services
-      await connectDatabase();
+      await prisma.$connect();
       logger.info('Database connected successfully');
 
       // Initialize Stripe

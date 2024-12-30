@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSubscriptionStore } from '../store/subscriptionStore';
 import { PlanType } from '../../../shared/types/payment';
 import { APP_ROUTES } from '../config/routes';
+import { SubscriptionContext } from '../context/SubscriptionContext'; // Add this line
 
 export const useSubscription = () => {
   const navigate = useNavigate();
@@ -128,4 +129,14 @@ export const useSubscriptionFeature = (feature: string) => {
   }, [currentPlan, feature, loading]);
 
   return hasFeature;
+};
+
+export const SubscriptionProvider = ({ children }: { children: React.ReactNode }) => {
+  const subscriptionStore = useSubscriptionStore();
+
+  return (
+    <SubscriptionContext.Provider value={subscriptionStore}>
+      {children}
+    </SubscriptionContext.Provider>
+  );
 };

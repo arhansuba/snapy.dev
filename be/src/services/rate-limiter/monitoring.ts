@@ -113,7 +113,15 @@ export class RateLimitMonitoring {
   }
 
   public static async clearUserLimits(userId: string): Promise<void> {
-    // Implementation for clearing user limits
+    const prefixes = ['rl:free:', 'rl:basic:', 'rl:premium:', 'rl:enterprise:', 'rl:ai:'];
+    const pipeline = redis.pipeline();
+
+    for (const prefix of prefixes) {
+      const key = `${prefix}${userId}`;
+      pipeline.del(key);
+    }
+
+    await pipeline.exec();
   }
 
   private static getDayKey(timestamp: number): string {

@@ -1,22 +1,23 @@
 // frontend/src/utils/api.ts
-import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
-import { AuthResponse } from '../../../shared/types/auth';
+type ApiOptions = {
+  baseURL: string;
+  timeout?: number;
+  headers?: Record<string, string>;
+};
 
-class Api {
-  [x: string]: any;
-  private api: AxiosInstance;
+export class Api {
   private static instance: Api;
+  private baseURL: string;
+  private timeout: number;
+  private headers: Record<string, string>;
 
   private constructor() {
-    this.api = axios.create({
-      baseURL: process.env.VITE_API_URL || 'http://localhost:3001/api',
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    this.setupInterceptors();
+    // Replace process.env with import.meta.env
+    this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    this.timeout = 30000;
+    this.headers = {
+      'Content-Type': 'application/json',
+    };
   }
 
   public static getInstance(): Api {
@@ -26,58 +27,83 @@ class Api {
     return Api.instance;
   }
 
-  private setupInterceptors() {
-    // Request interceptor
-    this.api.interceptors.request.use(
-      (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-
-    // Response interceptor
-    this.api.interceptors.response.use(
-      (response) => response,
-      (error: AxiosError) => {
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-        }
-        return Promise.reject(this.handleError(error));
-      }
-    );
+  public setAuthToken(token: string | null) {
+    if (token) {
+      this.headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      delete this.headers['Authorization'];
+    }
   }
 
-  private handleError(error: AxiosError): Error {
-    if (error.response?.data) {
-      const errorMessage = (error.response?.data as { message?: string })?.message || 'An error occurred';
-      return new Error(errorMessage);
+  private async request<T>(
+    method: string,
+    endpoint: string,
+    data?: any,
+    headers?: Record<string, string>
+  ): Promise<T> {
+    const url = `${this.baseURL}${endpoint}`;
+    const requestHeaders = {
+      ...this.headers,
+      ...headers,
+    };
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: requestHeaders,
+        body: data ? JSON.stringify(data) : undefined,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'API request failed');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
     }
-    return new Error(error.message || 'Network error');
+  }
+
+  public get<T>(endpoint: string, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>('GET', endpoint, undefined, headers);
+  }
+
+  public post<T>(endpoint: string, data?: any, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>('POST', endpoint, data, headers);
+  }
+
+  public put<T>(endpoint: string, data?: any, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>('PUT', endpoint, data, headers);
+  }
+
+  public delete<T>(endpoint: string, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>('DELETE', endpoint, undefined, headers);
+  }
+
+  public patch<T>(endpoint: string, data?: any, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>('PATCH', endpoint, data, headers);
   }
 
   // Auth endpoints
   async login(email: string, password: string): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/login', {
+    const response = await this.post<AuthResponse>('/auth/login', {
       email,
       password,
     });
-    localStorage.setItem('token', response.data.token);
-    return response.data;
+    localStorage.setItem('token', response.token);
+    return response;
   }
 
   async register(email: string, password: string, name?: string): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/register', {
+    const response = await this.post<AuthResponse>('/auth/register', {
       email,
       password,
       name,
     });
-    localStorage.setItem('token', response.data.token);
-    return response.data;
+    localStorage.setItem('token', response.token);
+    return response;
   }
 
   async logout(): Promise<void> {
@@ -86,44 +112,39 @@ class Api {
 
   // Projects endpoints
   async getProjects() {
-    return this.api.get('/projects').then(res => res.data);
+    return this.get('/projects');
   }
 
   async getProject(id: string) {
-    return this.api.get(`/projects/${id}`).then(res => res.data);
+    return this.get(`/projects/${id}`);
   }
 
   async createProject(data: any) {
-    return this.api.post('/projects', data).then(res => res.data);
+    return this.post('/projects', data);
   }
 
   async updateProject(id: string, data: any) {
-    return this.api.put(`/projects/${id}`, data).then(res => res.data);
+    return this.put(`/projects/${id}`, data);
   }
 
   async deleteProject(id: string) {
-    return this.api.delete(`/projects/${id}`).then(res => res.data);
+    return this.delete(`/projects/${id}`);
   }
 
   // AI endpoints
   async generateCode(prompt: string, options: any) {
-    return this.api.post('/ai/generate', { prompt, ...options }).then(res => res.data);
+    return this.post('/ai/generate', { prompt, ...options });
   }
 
   // Payment endpoints
   async getPlans() {
-    return this.api.get('/payment/plans').then(res => res.data);
+    return this.get('/payment/plans');
   }
 
   async createSubscription(planId: string) {
-    return this.api.post('/payment/create-subscription', { planId }).then(res => res.data);
-  }
-
-  // Generic request method
-  async request<T>(config: AxiosRequestConfig): Promise<T> {
-    const response = await this.api.request<T>(config);
-    return response.data;
+    return this.post('/payment/create-subscription', { planId });
   }
 }
 
+// Create and export API instance
 export const api = Api.getInstance();

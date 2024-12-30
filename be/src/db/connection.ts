@@ -1,6 +1,6 @@
 // src/db/connection.ts
-import { PrismaClient } from '@prisma/client';
-import { logger } from '../utils/logger'; // We'll need to add this later
+import { PrismaClient, Prisma } from '@prisma/client';
+import { logger } from '../utils/logger';
 
 let prisma: PrismaClient;
 
@@ -19,13 +19,13 @@ export class DatabaseConnection {
 
     // Log queries in development
     if (process.env.NODE_ENV === 'development') {
-      this.client.$on('query', (e: { query: string; }) => {
+      (this.client.$on as any)('query', (e: Prisma.QueryEvent) => {
         logger.debug('Query: ' + e.query);
       });
     }
 
     // Log errors
-    this.client.$on('error', (e: any) => {
+    (this.client.$on as any)('error', (e: Prisma.LogEvent) => {
       logger.error('Database error:', e);
     });
   }

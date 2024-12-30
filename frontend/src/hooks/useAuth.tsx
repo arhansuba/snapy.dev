@@ -1,8 +1,8 @@
 // frontend/src/hooks/useAuth.ts
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, createContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { LoginCredentials, RegisterCredentials } from '../../../shared/types/auth';
+import { LoginCredentials, RegisterCredentials, User } from '../../../shared/types/auth';
 import { APP_ROUTES } from '../config/routes';
 
 export const useAuth = () => {
@@ -73,4 +73,29 @@ export const useAuth = () => {
     updateUser,
     checkAuth,
   };
+};
+
+   
+
+interface AuthContextType {
+  isAuthenticated: boolean;
+  user: Omit<User, "password"> | null;
+  loading: boolean;
+  error: string | null;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
+  logout: () => void;
+  updateUser: (user: Partial<User>) => void;
+  checkAuth: () => boolean;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const auth = useAuth();
+  return (
+    <AuthContext.Provider value={auth}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

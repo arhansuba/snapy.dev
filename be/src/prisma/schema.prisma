@@ -39,6 +39,8 @@ model Project {
   name        String
   description String?
   files       Json      // Store file structure
+  framework   String    @default("react")
+  styling     String    @default("tailwind")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
